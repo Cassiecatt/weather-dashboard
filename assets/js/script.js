@@ -33,19 +33,13 @@ var getWeather = function() {
             // console.log(windSpeed);
     });
 }
-getWeather();
 
 //Function grabbing user search in input field
 var searchValue = function() {
+    getWeather();
     var userSearch = document.querySelector("#search-term").value;
     // console.log(userSearch)
 }
-
-
-
-
-
-
 
 
 // Event Listener - when button is clicked getWeather function runs
