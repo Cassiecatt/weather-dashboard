@@ -76,7 +76,7 @@ var uvIndex = function (lat, lon) {
 // Forecast function
 var forecast = function() {
     var userSearch = document.querySelector("#search-term").value;
-    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + userSearch + "&appid=a2c9a8e2a17021895f105341626feb6f&lat"
+    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + userSearch + "&units=imperial&appid=a2c9a8e2a17021895f105341626feb6f&lat"
     fetch(apiUrl)
     .then(function (response) {
         return response.json();
@@ -84,15 +84,44 @@ var forecast = function() {
     .then(function (response) {
         console.log("forecast", response)
 
-        //Forecast header
-        var forecast = document.querySelector("#forecast");
-        var forecastHeader = document.createElement("h3");
-        forecastHeader.textContent = "5-Day Forecast";
-        forecast.appendChild(forecastHeader);
+        // //Forecast header
+        // var forecast = document.querySelector("#forecast");
+        // var forecastHeader = document.createElement("h3");
+        // forecastHeader.textContent = "5-Day Forecast";
+        // forecast.appendChild(forecastHeader);
 
-        //for loop over forecasts
-        for (var i = 0; i < response.list.length; i++) {
-       
+    
+
+        //Only look at forecast for 12pm on each day
+        for (var i = 2; i < response.list.length; i+=8) {
+            if (response.list[i].dt_txt.indexOf("2,10,18,26,34")) {
+
+                 // create div inside forecast container
+                 var forecastContainer = document.querySelector("#forecast-container");
+                 var weatherCard = document.createElement("div")
+                 weatherCard.classList.add("card", "col-md-2", "bg-primary", "text-white");
+                 forecastContainer.appendChild(weatherCard);
+                 
+                 //date variable
+                 var titleEl = document.createElement("h5");
+                 titleEl.textContent = new Date(response.list[i].dt_txt).toLocaleDateString()
+                 weatherCard.appendChild(titleEl);
+
+                 //temp variable
+                 var temp = document.createElement("p");
+                 temp.classList.add("card-text");
+                 temp.textContent = "Temp: " + response.list[i].main.temp_max + " °F";
+                 weatherCard.appendChild(temp);
+
+                 //humidity variable
+                 var humidity = document.createElement("p");
+                 humidity.classList.add("card-text");
+                 humidity.textContent = "Humidity: " + response.list[i].main.humidity + " %";
+                 weatherCard.appendChild(humidity);
+
+
+                 
+            }
         }
 
     });
