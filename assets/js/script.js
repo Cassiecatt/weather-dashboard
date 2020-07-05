@@ -19,8 +19,8 @@ var getWeather = function () {
     .then(function (response) {
       return response.json();
     })
-    .then(function (response) {
-      console.log("getWeather", response);
+    .then(function (data) {
+      console.log("getWeather", data);
 
       //Clear old content
       var cityInfo = document.querySelector("#city-info");
@@ -29,26 +29,26 @@ var getWeather = function () {
       // Create city name variable and append to container (need to add date)
       var cityName = document.createElement("h3");
       cityName.textContent =
-        response.name + " (" + new Date().toLocaleDateString() + ")";
+        data.name + " (" + new Date().toLocaleDateString() + ")";
       cityInfo.appendChild(cityName);
 
       //Temperature variable
       var temperature = document.createElement("p");
-      temperature.textContent = "Temperature: " + response.main.temp + "°F"; // need to convert to °F
+      temperature.textContent = "Temperature: " + data.main.temp + "°F"; // need to convert to °F
       cityInfo.appendChild(temperature);
 
       //Humidity variable
       var humidity = document.createElement("p");
-      humidity.textContent = "Humidity: " + response.main.humidity + "%";
+      humidity.textContent = "Humidity: " + data.main.humidity + "%";
       cityInfo.appendChild(humidity);
 
       //Wind speed variable
       var windSpeed = document.createElement("p");
-      windSpeed.textContent = "Wind Speed: " + response.wind.speed + "MPH";
+      windSpeed.textContent = "Wind Speed: " + data.wind.speed + "MPH";
       cityInfo.appendChild(windSpeed);
 
       //UV variable
-      uvIndex(response.coord.lat, response.coord.lon);
+      uvIndex(data.coord.lat, data.coord.lon);
 
       forecast();
     });
@@ -65,11 +65,11 @@ var uvIndex = function (lat, lon) {
     .then(function (response) {
       return response.json();
     })
-    .then(function (response) {
+    .then(function (data) {
       // console.log(response[0].value)
       var cityInfo = document.querySelector("#city-info");
       var uv = document.createElement("p");
-      uv.textContent = "UV Index: " + response[0].value;
+      uv.textContent = "UV Index: " + data[0].value;
       cityInfo.appendChild(uv);
     });
 };
@@ -85,8 +85,8 @@ var forecast = function () {
     .then(function (response) {
       return response.json();
     })
-    .then(function (response) {
-      console.log("forecast", response);
+    .then(function (data) {
+      console.log("forecast", data);
 
       //Forecast header - add to empty h3
       var forecast = document.querySelector("#forecast-header");
@@ -97,8 +97,8 @@ var forecast = function () {
       forecastContainer.textContent = " ";
 
       //Only look at forecast for 12pm on each day
-      for (var i = 2; i < response.list.length; i += 8) {
-        if (response.list[i].dt_txt.indexOf("2,10,18,26,34")) {
+      for (var i = 2; i < data.list.length; i += 8) {
+        if (data.list[i].dt_txt.indexOf("3:00:00") != -1) {
           // create div inside forecast container
 
           var weatherCard = document.createElement("div");
@@ -114,26 +114,26 @@ var forecast = function () {
           //date variable
           var titleEl = document.createElement("h6");
           titleEl.textContent = new Date(
-            response.list[i].dt_txt
+            data.list[i].dt_txt
           ).toLocaleDateString();
           weatherCard.appendChild(titleEl);
 
           //image variable
           var img = document.createElement("img");
-          img.setAttribute("src", "http://openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png")
+          img.setAttribute("src", "http://openweathermap.org/img/w/" + data.list[i].weather[0].icon + ".png")
           weatherCard.appendChild(img);
 
           //temp variable
           var temp = document.createElement("p");
           temp.classList.add("card-text");
-          temp.textContent = "Temp: " + response.list[i].main.temp_max + "°F";
+          temp.textContent = "Temp: " + data.list[i].main.temp_max + "°F";
           weatherCard.appendChild(temp);
 
           //humidity variable
           var humidity = document.createElement("p");
           humidity.classList.add("card-text");
           humidity.textContent =
-            "Humidity: " + response.list[i].main.humidity + "%";
+            "Humidity: " + data.list[i].main.humidity + "%";
           weatherCard.appendChild(humidity);
         }
       }
