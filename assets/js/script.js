@@ -22,28 +22,29 @@ var getWeather = function () {
     .then(function (response) {
       console.log("getWeather", response);
 
-      //Clear old content 
+      //Clear old content
       var cityInfo = document.querySelector("#city-info");
       cityInfo.textContent = " ";
 
       // Create city name variable and append to container (need to add date)
       var cityName = document.createElement("h3");
-      cityName.textContent = response.name + " (" + new Date().toLocaleDateString() + ")";
+      cityName.textContent =
+        response.name + " (" + new Date().toLocaleDateString() + ")";
       cityInfo.appendChild(cityName);
 
       //Temperature variable
       var temperature = document.createElement("p");
-      temperature.textContent = "Temperature: " + response.main.temp + " °F"; // need to convert to °F
+      temperature.textContent = "Temperature: " + response.main.temp + "°F"; // need to convert to °F
       cityInfo.appendChild(temperature);
 
       //Humidity variable
       var humidity = document.createElement("p");
-      humidity.textContent = "Humidity: " + response.main.humidity + " %";
+      humidity.textContent = "Humidity: " + response.main.humidity + "%";
       cityInfo.appendChild(humidity);
 
       //Wind speed variable
       var windSpeed = document.createElement("p");
-      windSpeed.textContent = "Wind Speed: " + response.wind.speed + " MPH";
+      windSpeed.textContent = "Wind Speed: " + response.wind.speed + "MPH";
       cityInfo.appendChild(windSpeed);
 
       //UV variable
@@ -74,56 +75,68 @@ var uvIndex = function (lat, lon) {
 };
 
 // Forecast function
-var forecast = function() {
-    var userSearch = document.querySelector("#search-term").value;
-    var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + userSearch + "&units=imperial&appid=a2c9a8e2a17021895f105341626feb6f&lat"
-    fetch(apiUrl)
+var forecast = function () {
+  var userSearch = document.querySelector("#search-term").value;
+  var apiUrl =
+    "http://api.openweathermap.org/data/2.5/forecast?q=" +
+    userSearch +
+    "&units=imperial&appid=a2c9a8e2a17021895f105341626feb6f&lat";
+  fetch(apiUrl)
     .then(function (response) {
-        return response.json();
+      return response.json();
     })
     .then(function (response) {
-        console.log("forecast", response)
+      console.log("forecast", response);
 
-        // //Forecast header
-        // var forecast = document.querySelector("#forecast");
-        // var forecastHeader = document.createElement("h3");
-        // forecastHeader.textContent = "5-Day Forecast";
-        // forecast.appendChild(forecastHeader);
+      //Forecast header - add to empty h3
+      var forecast = document.querySelector("#forecast-header");
+      forecast.textContent = "5-Day Forecast:";
 
-    
+      //Clear old content
+      var forecastContainer = document.querySelector("#forecast-container");
+      forecastContainer.textContent = " ";
 
-        //Only look at forecast for 12pm on each day
-        for (var i = 2; i < response.list.length; i+=8) {
-            if (response.list[i].dt_txt.indexOf("2,10,18,26,34")) {
+      //Only look at forecast for 12pm on each day
+      for (var i = 2; i < response.list.length; i += 8) {
+        if (response.list[i].dt_txt.indexOf("2,10,18,26,34")) {
+          // create div inside forecast container
 
-                 // create div inside forecast container
-                 var forecastContainer = document.querySelector("#forecast-container");
-                 var weatherCard = document.createElement("div")
-                 weatherCard.classList.add("card", "col-md-2", "bg-primary", "text-white");
-                 forecastContainer.appendChild(weatherCard);
-                 
-                 //date variable
-                 var titleEl = document.createElement("h5");
-                 titleEl.textContent = new Date(response.list[i].dt_txt).toLocaleDateString()
-                 weatherCard.appendChild(titleEl);
+          var weatherCard = document.createElement("div");
+          weatherCard.classList.add(
+            "card",
+            "col-md-2",
+            "col-sm-3",
+            "bg-primary",
+            "text-white"
+          );
+          forecastContainer.appendChild(weatherCard);
 
-                 //temp variable
-                 var temp = document.createElement("p");
-                 temp.classList.add("card-text");
-                 temp.textContent = "Temp: " + response.list[i].main.temp_max + " °F";
-                 weatherCard.appendChild(temp);
+          //date variable
+          var titleEl = document.createElement("h6");
+          titleEl.textContent = new Date(
+            response.list[i].dt_txt
+          ).toLocaleDateString();
+          weatherCard.appendChild(titleEl);
 
-                 //humidity variable
-                 var humidity = document.createElement("p");
-                 humidity.classList.add("card-text");
-                 humidity.textContent = "Humidity: " + response.list[i].main.humidity + " %";
-                 weatherCard.appendChild(humidity);
+          //image variable
+          var img = document.createElement("img");
+          img.setAttribute("src", "http://openweathermap.org/img/w/" + response.list[i].weather[0].icon + ".png")
+          weatherCard.appendChild(img);
 
+          //temp variable
+          var temp = document.createElement("p");
+          temp.classList.add("card-text");
+          temp.textContent = "Temp: " + response.list[i].main.temp_max + "°F";
+          weatherCard.appendChild(temp);
 
-                 
-            }
+          //humidity variable
+          var humidity = document.createElement("p");
+          humidity.classList.add("card-text");
+          humidity.textContent =
+            "Humidity: " + response.list[i].main.humidity + "%";
+          weatherCard.appendChild(humidity);
         }
-
+      }
     });
 };
 

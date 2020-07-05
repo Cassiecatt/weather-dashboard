@@ -1,0 +1,13 @@
+#forecast-container {
+    justify-content: space-evenly;
+    padding: 10px;
+}
+
+#city-info {
+    padding: 10px;
+}
+
+.card-text {
+    font-size: 14px;
+}
+
